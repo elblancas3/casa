@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
   <title>CasaControl</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,700;1,9..144,400&display=swap" rel="stylesheet">
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -18,45 +17,58 @@
     body{background:var(--bg);color:var(--ink);font-family:'Syne',sans-serif;min-height:100vh}
     .app{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;background:var(--paper);border-left:1px solid var(--border);border-right:1px solid var(--border)}
 
-    /* Header */
+    /* ── Setup screen ── */
+    .setup{padding:32px 24px;display:flex;flex-direction:column;gap:16px}
+    .setup-logo{font-family:'Fraunces',serif;font-size:28px;font-weight:700;color:var(--ink)}
+    .setup-logo em{color:var(--terra);font-style:italic;font-weight:400}
+    .setup h2{font-family:'Fraunces',serif;font-size:20px;font-weight:700;margin-top:8px}
+    .setup p{font-size:13px;color:var(--ink3);line-height:1.6}
+    .steps{display:flex;flex-direction:column;gap:10px;margin:4px 0}
+    .step{display:flex;gap:12px;align-items:flex-start;background:var(--bg);border-radius:10px;padding:12px}
+    .step-n{width:24px;height:24px;border-radius:50%;background:var(--terra);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+    .step-txt{font-size:13px;color:var(--ink);line-height:1.5}
+    .step-txt a{color:var(--terra);text-decoration:none;font-weight:700}
+    .step-txt code{background:var(--border);padding:1px 5px;border-radius:4px;font-family:'IBM Plex Mono',monospace;font-size:11px}
+    .setup-field{display:flex;flex-direction:column;gap:6px}
+    .setup-field label{font-family:'IBM Plex Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink3)}
+    .setup-field input{background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--ink);outline:none;width:100%}
+    .setup-field input:focus{border-color:var(--terra)}
+    .setup-field input::placeholder{color:var(--ink3)}
+    .btn-setup{background:var(--terra);color:#fff;border:none;border-radius:12px;padding:15px;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;cursor:pointer;width:100%}
+
+    /* ── Status dot ── */
+    .status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+    .dot-ok{background:#4CAF50}.dot-err{background:var(--terra)}.dot-sync{background:var(--amber)}
+
+    /* ── Header ── */
     .hdr{background:var(--night);padding:22px 22px 0;position:relative;overflow:hidden}
     .hdr::before{content:'';position:absolute;right:-50px;top:-60px;width:200px;height:200px;background:var(--terra);border-radius:50%;opacity:.1;pointer-events:none}
     .hdr-row{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:flex-start}
     .logo{font-family:'Fraunces',serif;font-size:26px;font-weight:700;color:#F2EDE4;line-height:1}
     .logo em{color:var(--terra);font-style:italic;font-weight:400}
     .hdr-sub{font-family:'IBM Plex Mono',monospace;font-size:9px;color:#5A5448;text-transform:uppercase;letter-spacing:.1em;margin-top:4px}
+    .hdr-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
     .avs{display:flex;gap:6px}
     .av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:700;font-size:13px}
     .av-r{background:var(--sage);color:#fff}.av-e{background:var(--terra);color:#fff}
+    .conn-badge{display:flex;align-items:center;gap:5px;font-family:'IBM Plex Mono',monospace;font-size:8px;color:#5A5448;text-transform:uppercase;letter-spacing:.06em}
     .tabs{display:flex;position:relative;z-index:1;margin-top:18px}
     .tab-btn{flex:1;padding:13px 6px;background:none;border:none;color:#4A4438;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s}
     .tab-btn.on{color:#F2EDE4;border-bottom-color:var(--terra)}
+
     .content{flex:1;padding:18px 16px 100px;overflow-y:auto}
     .lbl{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--ink3);text-transform:uppercase;letter-spacing:.12em;margin-bottom:8px}
-
-    /* Sync bar */
-    .sync-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
-    .sync-info{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em}
-    .sync-btn{display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:8px;border:1.5px solid var(--border);background:var(--bg);font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:500;color:var(--ink3);cursor:pointer;transition:all .15s}
-    .sync-btn:hover{border-color:var(--sage);color:var(--sage)}
-
-    /* Legend */
     .legend{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:22px}
     .leg-item{display:flex;align-items:center;gap:5px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:5px 9px;font-size:12px;font-weight:600;color:var(--ink)}
-    .leg-icon{font-size:15px}
 
-    /* Month header */
     .month-div{font-family:'Fraunces',serif;font-size:17px;font-weight:700;color:var(--ink);margin:22px 0 10px;padding-bottom:8px;border-bottom:2px solid var(--border)}
     .month-div:first-of-type{margin-top:0}
     .month-turn{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink3);display:block;margin-top:2px;font-weight:400}
 
-    /* Weekend card */
     .wknd{border-radius:14px;margin-bottom:10px;overflow:hidden;border:1.5px solid var(--border);background:var(--paper)}
     .wknd.now{border-color:var(--terra);box-shadow:0 4px 18px rgba(191,75,40,.14)}
     .wknd.next{border-color:var(--amber);box-shadow:0 4px 18px rgba(201,139,16,.12)}
     .wknd.fut{opacity:.68}
-
-    /* Card header */
     .wh{padding:11px 14px;display:flex;align-items:center;gap:10px}
     .wknd.now .wh{background:var(--terra)}
     .wknd.next .wh{background:var(--amber-bg)}
@@ -70,16 +82,11 @@
     .badge-now{background:rgba(255,255,255,.22);color:#fff}
     .badge-next{background:var(--amber);color:#fff}
     .badge-fut{background:var(--border);color:var(--ink3)}
-
-    /* Card body */
     .wb{padding:12px 14px}
-    .pb{margin-bottom:10px}
-    .pb:last-of-type{margin-bottom:0}
+    .pb{margin-bottom:10px}.pb:last-of-type{margin-bottom:0}
     .pb-name{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
     .pb-r{color:var(--sage)}.pb-e{color:var(--terra)}
     .pb-tasks{display:flex;gap:6px}
-
-    /* Task chip */
     .chip{flex:1;display:flex;align-items:center;gap:6px;padding:9px 10px;border-radius:10px;border:1.5px solid;cursor:pointer;transition:all .15s;min-width:0;user-select:none}
     .chip-r{border-color:#B8D4C0;background:var(--sage-bg)}
     .chip-e{border-color:#DDB8A8;background:var(--terra-bg)}
@@ -88,22 +95,17 @@
     .chip-ico{font-size:17px;flex-shrink:0}
     .chip-txt{font-size:12px;font-weight:700;color:var(--ink);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
     .chip-r.done .chip-txt,.chip-e.done .chip-txt{color:#fff}
-    .chip-chk{width:18px;height:18px;border-radius:5px;border:1.5px solid rgba(0,0,0,.18);background:rgba(255,255,255,.45);display:flex;align-items:center;justify-content:center;font-size:10px;color:transparent;flex-shrink:0;transition:all .15s}
+    .chip-chk{width:18px;height:18px;border-radius:5px;border:1.5px solid rgba(0,0,0,.18);background:rgba(255,255,255,.45);display:flex;align-items:center;justify-content:center;font-size:10px;color:transparent;flex-shrink:0}
     .chip.done .chip-chk{border-color:transparent;background:rgba(255,255,255,.3);color:#fff}
-
-    /* Future preview */
     .fut-row{display:flex;gap:14px;flex-wrap:wrap}
     .fut-p{display:flex;align-items:center;gap:5px}
     .fut-name{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink3)}
-
-    /* Cacas */
     .cacas-row{margin-top:10px;padding-top:10px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
     .cacas-lbl{font-size:11px;color:var(--ink3);font-family:'IBM Plex Mono',monospace}
     .cacas-btn{display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:9px;border:1.5px solid var(--border);background:var(--bg);cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:500;color:var(--ink3);transition:all .15s}
     .cacas-btn:hover{border-color:var(--amber);background:var(--amber-bg)}
     .cacas-btn.done{background:var(--amber-bg);border-color:var(--amber);color:var(--amber)}
 
-    /* Balance */
     .bal{background:var(--night);border-radius:16px;padding:18px;margin-bottom:18px}
     .bal-grid{display:flex;gap:10px;margin-bottom:12px}
     .bal-p{flex:1;background:rgba(255,255,255,.05);border-radius:10px;padding:12px}
@@ -113,7 +115,8 @@
     .verdict{text-align:center;padding:9px;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500}
     .v-owe{background:rgba(191,75,40,.2);color:#F0A090}.v-even{background:rgba(74,122,90,.2);color:#90D0A0}
 
-    /* Expenses */
+    .exp-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+    .btn-reset{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--terra);background:none;border:1.5px solid var(--terra-bg);border-radius:8px;padding:4px 10px;cursor:pointer}
     .exp{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:13px;margin-bottom:9px;display:flex;gap:11px;align-items:flex-start}
     .exp-img{width:48px;height:48px;border-radius:8px;object-fit:cover;border:1px solid var(--border);flex-shrink:0;cursor:pointer}
     .exp-ph{width:48px;height:48px;border-radius:8px;background:var(--paper);border:1px dashed var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
@@ -127,15 +130,12 @@
     .exp-total{font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:500}
     .exp-split{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--ink3);margin-top:2px}
     .exp-del{background:none;border:none;color:#C0B0A0;font-size:12px;cursor:pointer;padding:3px;display:block;margin-left:auto;margin-top:6px}
-    .exp-del:hover{color:var(--terra)}
     .empty{text-align:center;padding:44px 20px;color:var(--ink3)}
     .empty-icon{font-size:38px;margin-bottom:12px}
     .empty-txt{font-size:13px;line-height:1.6}
 
-    /* FAB */
     .fab{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);width:min(calc(100% - 36px),444px);background:var(--terra);color:#fff;border:none;border-radius:14px;padding:16px;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 8px 28px rgba(191,75,40,.35);display:flex;align-items:center;justify-content:center;gap:8px;z-index:80}
 
-    /* Modal overlay */
     .modal{position:fixed;inset:0;background:rgba(18,16,10,.65);z-index:200;display:flex;align-items:flex-end;justify-content:center}
     .modal.hidden{display:none}
     .sheet{background:var(--paper);border-radius:20px 20px 0 0;width:100%;max-width:480px;padding:22px 22px 44px}
@@ -156,111 +156,136 @@
     .btn-main{flex:1;background:var(--terra);color:#fff;border:none;border-radius:12px;padding:14px;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;cursor:pointer}
     .btn-sec{background:var(--bg);color:var(--ink3);border:1px solid var(--border);border-radius:12px;padding:14px 18px;font-family:'Syne',sans-serif;font-size:14px;cursor:pointer}
 
-    /* Image preview overlay */
     .img-overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:600;display:flex;align-items:center;justify-content:center;padding:24px;cursor:pointer}
     .img-overlay.hidden{display:none}
     .img-overlay img{max-width:100%;max-height:80vh;border-radius:12px;object-fit:contain}
-
-    /* Toast */
     .toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:var(--night);color:#F2EDE4;font-family:'IBM Plex Mono',monospace;font-size:11px;padding:8px 16px;border-radius:20px;z-index:500;white-space:nowrap;opacity:0;transition:opacity .2s;pointer-events:none}
     .toast.show{opacity:1}
-
-    /* Hidden */
     .hidden{display:none!important}
   </style>
 </head>
 <body>
 
 <div class="app">
-  <!-- Header -->
-  <div class="hdr">
-    <div class="hdr-row">
-      <div>
-        <div class="logo">Casa<em>Control</em></div>
-        <div class="hdr-sub" id="hdr-date"></div>
+
+  <!-- ══ SETUP (si no hay Firebase URL configurada) ══ -->
+  <div id="screen-setup" class="hidden" style="display:none!important">
+    <div class="setup">
+      <div class="setup-logo">Casa<em>Control</em></div>
+      <h2>Conecta la base de datos 🔥</h2>
+      <p>Para que tú y Rafa vean los mismos datos en tiempo real, necesitas una base de datos gratuita de Firebase. Solo se hace una vez.</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-n">1</div>
+          <div class="step-txt">Ve a <a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a> e inicia sesión con tu cuenta de Google.</div>
+        </div>
+        <div class="step">
+          <div class="step-n">2</div>
+          <div class="step-txt">Toca <strong>Crear proyecto</strong>, ponle cualquier nombre (ej. <em>casacontrol</em>), desactiva Google Analytics y créalo.</div>
+        </div>
+        <div class="step">
+          <div class="step-n">3</div>
+          <div class="step-txt">En el menú izquierdo busca <strong>Realtime Database</strong> → <em>Crear base de datos</em> → elige cualquier región → modo <strong>prueba</strong> (test mode).</div>
+        </div>
+        <div class="step">
+          <div class="step-n">4</div>
+          <div class="step-txt">Copia la URL que aparece arriba, tiene este formato:<br><code>https://tu-proyecto-default-rtdb.firebaseio.com</code></div>
+        </div>
+        <div class="step">
+          <div class="step-n">5</div>
+          <div class="step-txt">Pégala abajo y toca <strong>Conectar</strong>. ¡Listo! Manda el archivo a Rafa y ambos verán lo mismo.</div>
+        </div>
       </div>
-      <div class="avs">
-        <div class="av av-r">R</div>
-        <div class="av av-e">E</div>
+
+      <div class="setup-field">
+        <label>URL de tu Firebase Realtime Database</label>
+        <input type="url" id="setup-url" placeholder="https://tu-proyecto-default-rtdb.firebaseio.com">
       </div>
-    </div>
-    <div class="tabs">
-      <button class="tab-btn on" onclick="showTab('limpieza')">🧹 Limpieza</button>
-      <button class="tab-btn" onclick="showTab('gastos')">💳 Gastos</button>
+      <button class="btn-setup" onclick="saveFirebaseUrl()">Conectar →</button>
     </div>
   </div>
 
-  <div class="content">
+  <!-- ══ APP PRINCIPAL ══ -->
+  <div id="screen-app" class="hidden">
 
-    <!-- ══ LIMPIEZA ══ -->
-    <div id="tab-limpieza">
-      <!-- Sync bar -->
-      <div class="sync-bar">
-        <div class="sync-info" id="sync-info">Toca para ver cambios del otro</div>
-        <button class="sync-btn" onclick="syncLog()">🔄 Actualizar</button>
-      </div>
-
-      <!-- Legend -->
-      <div class="lbl">Qué significa cada icono</div>
-      <div class="legend">
-        <div class="leg-item"><span class="leg-icon">🚿</span> Baño</div>
-        <div class="leg-item"><span class="leg-icon">🍳</span> Cocina</div>
-        <div class="leg-item"><span class="leg-icon">🧹</span> Barrer y Trapear</div>
-        <div class="leg-item"><span class="leg-icon">🌿</span> Patios</div>
-        <div class="leg-item"><span class="leg-icon">💩</span> Cacas del perro — Emilio</div>
-      </div>
-
-      <!-- Calendar -->
-      <div id="calendar"></div>
-    </div>
-
-    <!-- ══ GASTOS ══ -->
-    <div id="tab-gastos" class="hidden">
-      <div class="bal">
-        <div class="lbl" style="color:#4A4438;margin-bottom:12px">Balance acumulado</div>
-        <div class="bal-grid">
-          <div class="bal-p">
-            <div class="bal-name">RAFA PUSO</div>
-            <div class="bal-amt" id="bal-rafa">$0.00</div>
-            <div class="bal-each" id="bal-rafa-each">le toca $0.00</div>
+    <div class="hdr">
+      <div class="hdr-row">
+        <div>
+          <div class="logo">Casa<em>Control</em></div>
+          <div class="hdr-sub" id="hdr-date"></div>
+        </div>
+        <div class="hdr-right">
+          <div class="avs">
+            <div class="av av-r">R</div>
+            <div class="av av-e">E</div>
           </div>
-          <div class="bal-p">
-            <div class="bal-name">EMILIO PUSO</div>
-            <div class="bal-amt" id="bal-emilio">$0.00</div>
-            <div class="bal-each" id="bal-emilio-each">le toca $0.00</div>
+          <div class="conn-badge">
+            <div class="status-dot" id="conn-dot"></div>
+            <span id="conn-txt">conectando…</span>
           </div>
         </div>
-        <div class="verdict v-even" id="verdict">✓ Están a mano</div>
       </div>
-      <div class="sync-bar">
-        <div class="sync-info" id="sync-info-g">Toca para ver cambios del otro</div>
-        <button class="sync-btn" onclick="syncLog()">🔄 Actualizar</button>
+      <div class="tabs">
+        <button class="tab-btn on" onclick="showTab('limpieza')">🧹 Limpieza</button>
+        <button class="tab-btn" onclick="showTab('gastos')">💳 Gastos</button>
       </div>
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-        <div class="lbl" style="margin-bottom:0" id="exp-count">0 gastos registrados</div>
-        <button onclick="resetExpenses()" style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--terra);background:none;border:1.5px solid var(--terra-bg);border-radius:8px;padding:4px 10px;cursor:pointer;">↺ Borrar todo</button>
-      </div>
-      <div id="exp-list"></div>
     </div>
 
-  </div><!-- /content -->
+    <div class="content">
 
-  <button class="fab hidden" id="fab-gastos" onclick="openForm()">+ Agregar gasto</button>
-</div>
+      <!-- LIMPIEZA -->
+      <div id="tab-limpieza">
+        <div class="lbl">Qué significa cada icono</div>
+        <div class="legend">
+          <div class="leg-item">🚿 Baño</div>
+          <div class="leg-item">🍳 Cocina</div>
+          <div class="leg-item">🧹 Barrer y Trapear</div>
+          <div class="leg-item">🌿 Patios</div>
+          <div class="leg-item">💩 Cacas — Emilio</div>
+        </div>
+        <div id="calendar"></div>
+      </div>
 
-<!-- Add expense modal -->
+      <!-- GASTOS -->
+      <div id="tab-gastos" class="hidden">
+        <div class="bal">
+          <div class="lbl" style="color:#4A4438;margin-bottom:12px">Balance acumulado</div>
+          <div class="bal-grid">
+            <div class="bal-p">
+              <div class="bal-name">RAFA PUSO</div>
+              <div class="bal-amt" id="bal-rafa">$0.00</div>
+              <div class="bal-each" id="bal-rafa-each">le toca $0.00</div>
+            </div>
+            <div class="bal-p">
+              <div class="bal-name">EMILIO PUSO</div>
+              <div class="bal-amt" id="bal-emilio">$0.00</div>
+              <div class="bal-each" id="bal-emilio-each">le toca $0.00</div>
+            </div>
+          </div>
+          <div class="verdict v-even" id="verdict">✓ Están a mano</div>
+        </div>
+        <div class="exp-header">
+          <div class="lbl" style="margin-bottom:0" id="exp-count">0 gastos</div>
+          <button class="btn-reset" onclick="resetExpenses()">↺ Borrar todo</button>
+        </div>
+        <div id="exp-list"></div>
+      </div>
+
+    </div>
+
+    <button class="fab hidden" id="fab-gastos" onclick="openForm()">+ Agregar gasto</button>
+  </div>
+
+</div><!-- /app -->
+
+<!-- Expense form modal -->
 <div class="modal hidden" id="modal-form">
   <div class="sheet">
     <div class="handle"></div>
     <div class="sheet-title">Nuevo Gasto</div>
-    <div class="field">
-      <label>Descripción</label>
-      <input type="text" id="f-desc" placeholder="Súper, gas, agua…">
-    </div>
-    <div class="field">
-      <label>Monto (MXN)</label>
-      <input type="number" id="f-amount" placeholder="0.00" style="font-family:'IBM Plex Mono',monospace">
-    </div>
+    <div class="field"><label>Descripción</label><input type="text" id="f-desc" placeholder="Súper, gas, agua…"></div>
+    <div class="field"><label>Monto (MXN)</label><input type="number" id="f-amount" placeholder="0.00" style="font-family:'IBM Plex Mono',monospace"></div>
     <div class="field">
       <label>¿Quién pagó?</label>
       <div class="tog">
@@ -271,7 +296,7 @@
     <div class="field">
       <label>Recibo (opcional)</label>
       <div class="upload-zone" onclick="document.getElementById('f-file').click()">
-        <div id="upload-placeholder"><div style="font-size:26px">📸</div><div class="upload-txt">Toca para agregar foto del recibo</div></div>
+        <div id="upload-placeholder"><div style="font-size:26px">📸</div><div class="upload-txt">Toca para agregar foto</div></div>
         <img id="upload-preview" class="hidden" alt="preview">
       </div>
       <input type="file" id="f-file" accept="image/*" style="display:none" onchange="handleFile(this)">
@@ -283,16 +308,13 @@
   </div>
 </div>
 
-<!-- Image preview overlay -->
 <div class="img-overlay hidden" id="img-overlay" onclick="this.classList.add('hidden')">
   <img id="img-full" src="" alt="Recibo">
 </div>
-
-<!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <script>
-// ─── Data ────────────────────────────────────────────────────────────────────
+// ─── Config ──────────────────────────────────────────────────────────────────
 
 const TASKS = [
   { id:"bano",   label:"Baño",            icon:"🚿" },
@@ -300,85 +322,114 @@ const TASKS = [
   { id:"barrer", label:"Barrer y Trapear",icon:"🧹" },
   { id:"patios", label:"Patios",          icon:"🌿" },
 ];
-
 const TURNS = {
-  A: { Emilio:["bano","cocina"],  Rafa:["barrer","patios"] },
-  B: { Rafa:  ["bano","cocina"],  Emilio:["barrer","patios"] },
+  A: { Emilio:["bano","cocina"], Rafa:["barrer","patios"] },
+  B: { Rafa:  ["bano","cocina"], Emilio:["barrer","patios"] },
 };
 
-// Estado en memoria
-let log      = {};  // { "satKey_taskId": true }  — compartido con Rafa
-let expenses = [];  // privado por usuario
+// ─── Estado ──────────────────────────────────────────────────────────────────
 
-let formPayer   = "Rafa";
+let DB_URL    = "https://casa-control-d65ef-default-rtdb.firebaseio.com";   // Firebase Realtime Database URL
+let log       = {};
+let expenses  = [];
+let formPayer = "Rafa";
 let formReceipt = null;
-let currentTab  = "limpieza";
 
-// ─── Storage helpers ─────────────────────────────────────────────────────────
+// ─── Firebase REST helpers ───────────────────────────────────────────────────
+// Usamos la REST API de Firebase — no requiere SDK, funciona con fetch puro.
 
-// Todo va a localStorage con claves fijas.
-// Si ambos abren el MISMO URL (GitHub Pages / Netlify) comparten el mismo
-// origen y ven los mismos datos al presionar Actualizar.
-const KEY_LOG = "cc_shared_log_v1";
-const KEY_EXP = "cc_shared_expenses_v1";
-
-function saveShared(val) {
-  try { localStorage.setItem(KEY_LOG, JSON.stringify(val)); } catch {}
-}
-function loadShared() {
-  try { const v = localStorage.getItem(KEY_LOG); return v ? JSON.parse(v) : {}; } catch { return {}; }
-}
-function saveExpenses() {
-  try { localStorage.setItem(KEY_EXP, JSON.stringify(expenses)); } catch {}
-}
-function loadExpenses() {
-  try { const v = localStorage.getItem(KEY_EXP); return v ? JSON.parse(v) : []; } catch { return []; }
-}
-function resetExpenses() {
-  if (!confirm('¿Borrar todos los gastos y empezar de cero?')) return;
-  expenses = [];
-  saveExpenses();
-  renderExpenses();
-  showToast('Gastos borrados ✓');
+async function fbGet(path) {
+  const r = await fetch(`${DB_URL}${path}.json`);
+  if (!r.ok) throw new Error(r.status);
+  return r.json();
 }
 
-// ─── Init ────────────────────────────────────────────────────────────────────
+async function fbSet(path, data) {
+  const r = await fetch(`${DB_URL}${path}.json`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!r.ok) throw new Error(r.status);
+  return r.json();
+}
 
-function init() {
-  // Fecha en header
+async function fbDelete(path) {
+  await fetch(`${DB_URL}${path}.json`, { method: "DELETE" });
+}
+
+// Streaming (Server-Sent Events) para actualizaciones en tiempo real
+let eventSource = null;
+function startRealtime() {
+  if (eventSource) eventSource.close();
+  eventSource = new EventSource(`${DB_URL}/cc.json`);
+  eventSource.addEventListener("put", e => {
+    try {
+      const payload = JSON.parse(e.data);
+      if (!payload.data) return;
+      const d = payload.data;
+      if (d.log)      { log      = d.log;      renderCalendar(); }
+      if (d.expenses) { expenses = Object.values(d.expenses); renderExpenses(); }
+      setStatus("ok");
+    } catch {}
+  });
+  eventSource.onerror = () => setStatus("err");
+  setStatus("sync");
+}
+
+// ─── Setup ───────────────────────────────────────────────────────────────────
+
+function saveFirebaseUrl() {
+  let url = document.getElementById("setup-url").value.trim().replace(/\/$/, "");
+  if (!url.startsWith("https://")) { showToast("URL inválida"); return; }
+  localStorage.setItem("cc_firebase_url", url);
+  DB_URL = url;
+  startApp();
+}
+
+async function startApp() {
+  document.getElementById("screen-setup").classList.add("hidden");
+  document.getElementById("screen-app").classList.remove("hidden");
   document.getElementById("hdr-date").textContent = new Date().toLocaleDateString("es-MX",{weekday:"long",day:"numeric",month:"long"});
 
-  // Cargar datos
-  log      = loadShared();
-  expenses = loadExpenses();
+  try {
+    const data = await fbGet("/cc");
+    if (data) {
+      if (data.log)      log      = data.log;
+      if (data.expenses) expenses = Object.values(data.expenses);
+    }
+    setStatus("ok");
+  } catch { setStatus("err"); }
 
   renderCalendar();
   renderExpenses();
+  startRealtime();
 }
 
-// ─── Tab switching ────────────────────────────────────────────────────────────
+function setStatus(s) {
+  const dot = document.getElementById("conn-dot");
+  const txt = document.getElementById("conn-txt");
+  if (s === "ok")   { dot.className="status-dot dot-ok";  txt.textContent="en línea"; }
+  if (s === "err")  { dot.className="status-dot dot-err"; txt.textContent="sin conexión"; }
+  if (s === "sync") { dot.className="status-dot dot-sync";txt.textContent="sincronizando…"; }
+}
+
+// ─── Boot ────────────────────────────────────────────────────────────────────
+
+function init() {
+  DB_URL = "https://casa-control-d65ef-default-rtdb.firebaseio.com";
+  startApp();
+}
+
+// ─── Tabs ─────────────────────────────────────────────────────────────────────
 
 function showTab(tab) {
-  currentTab = tab;
   document.getElementById("tab-limpieza").classList.toggle("hidden", tab !== "limpieza");
   document.getElementById("tab-gastos").classList.toggle("hidden", tab !== "gastos");
   document.getElementById("fab-gastos").classList.toggle("hidden", tab !== "gastos");
   document.querySelectorAll(".tab-btn").forEach((b,i) => {
-    b.classList.toggle("on", (i===0 && tab==="limpieza") || (i===1 && tab==="gastos"));
+    b.classList.toggle("on", (i===0&&tab==="limpieza")||(i===1&&tab==="gastos"));
   });
-}
-
-// ─── Sync ────────────────────────────────────────────────────────────────────
-
-function syncLog() {
-  log = loadShared();
-  expenses = loadExpenses();
-  renderCalendar();
-  renderExpenses();
-  const t = new Date().toLocaleTimeString("es-MX",{hour:"2-digit",minute:"2-digit"});
-  document.getElementById("sync-info").textContent = `Última sync: ${t}`;
-  document.getElementById("sync-info-g").textContent = `Última sync: ${t}`;
-  showToast("Sincronizado ✓");
 }
 
 // ─── Calendar ────────────────────────────────────────────────────────────────
@@ -386,259 +437,162 @@ function syncLog() {
 function monthTurn(year, month) {
   return ((year * 12) + month) % 2 === 0 ? "A" : "B";
 }
-
 function getYearWeekends() {
   const today = new Date(); today.setHours(0,0,0,0);
   const dow = today.getDay();
-  const daysToSat = dow === 6 ? 0 : 6 - dow;
-  const firstSat = new Date(today);
-  firstSat.setDate(today.getDate() + daysToSat);
-  const yearEnd = new Date(today.getFullYear(), 11, 31);
-
-  const out = [];
-  let cur = new Date(firstSat), i = 0;
-  while (cur <= yearEnd) {
-    const sat = new Date(cur);
-    const sun = new Date(sat); sun.setDate(sat.getDate() + 1);
-    out.push({
-      sat, sun,
-      satKey: sat.toISOString().split("T")[0],
-      month: sat.getMonth(),
-      year:  sat.getFullYear(),
-      isThisWeekend: i === 0 && (dow === 6 || dow === 0),
-      isNext:        i === 0 && !(dow === 6 || dow === 0),
-    });
-    cur.setDate(cur.getDate() + 7);
-    i++;
+  const daysToSat = dow===6 ? 0 : 6-dow;
+  const firstSat = new Date(today); firstSat.setDate(today.getDate()+daysToSat);
+  const yearEnd = new Date(today.getFullYear(),11,31);
+  const out=[]; let cur=new Date(firstSat),i=0;
+  while(cur<=yearEnd){
+    const sat=new Date(cur),sun=new Date(sat); sun.setDate(sat.getDate()+1);
+    out.push({ sat,sun, satKey:sat.toISOString().split("T")[0], month:sat.getMonth(), year:sat.getFullYear(),
+      isThisWeekend:i===0&&(dow===6||dow===0), isNext:i===0&&!(dow===6||dow===0) });
+    cur.setDate(cur.getDate()+7); i++;
   }
   return out;
 }
+const fmtD=(d,o)=>d.toLocaleDateString("es-MX",o);
+const fmt=n=>new Intl.NumberFormat("es-MX",{style:"currency",currency:"MXN"}).format(n);
 
-function fmtD(d, opts) { return d.toLocaleDateString("es-MX", opts); }
-function fmt(n) { return new Intl.NumberFormat("es-MX",{style:"currency",currency:"MXN"}).format(n); }
+function isDone(sk,id){ return !!(log[sk]&&log[sk][id]); }
 
-function isDone(sk, id) { return !!log[sk + "_" + id]; }
-
-function toggleTask(sk, id) {
-  const key = sk + "_" + id;
-  log[key] = !log[key];
-  saveShared(log);
+async function toggleTask(sk,id){
+  if(!log[sk]) log[sk]={};
+  log[sk][id] = !log[sk][id];
   renderCalendar();
+  try { await fbSet(`/cc/log/${sk}/${id}`, log[sk][id]); setStatus("ok"); }
+  catch { setStatus("err"); }
 }
 
-function renderCalendar() {
-  const weekends = getYearWeekends();
-  const cal = document.getElementById("calendar");
-  let html = "";
-  let lastMonth = -1;
-
-  weekends.forEach(({ sat, sun, satKey, month, year, isThisWeekend, isNext }) => {
-    const turn   = monthTurn(year, month);
-    const assign = TURNS[turn];
-    const isActive = isThisWeekend || isNext;
-    const cardCls = isThisWeekend ? "now" : isNext ? "next" : "fut";
-
-    // Month header
-    if (month !== lastMonth) {
-      lastMonth = month;
-      const mLabel = fmtD(sat,{month:"long",year:"numeric"});
-      const turnDesc = turn === "A"
-        ? "Emilio: 🚿🍳 &nbsp;·&nbsp; Rafa: 🧹🌿"
-        : "Rafa: 🚿🍳 &nbsp;·&nbsp; Emilio: 🧹🌿";
-      html += `<div class="month-div">${mLabel}<span class="month-turn">Turno ${turn} — ${turnDesc}</span></div>`;
+function renderCalendar(){
+  const weekends=getYearWeekends();
+  const cal=document.getElementById("calendar");
+  let html="",lastMonth=-1;
+  weekends.forEach(({sat,sun,satKey,month,year,isThisWeekend,isNext})=>{
+    const turn=monthTurn(year,month),assign=TURNS[turn],isActive=isThisWeekend||isNext,cardCls=isThisWeekend?"now":isNext?"next":"fut";
+    if(month!==lastMonth){
+      lastMonth=month;
+      const mLabel=fmtD(sat,{month:"long",year:"numeric"});
+      const td=turn==="A"?"Emilio: 🚿🍳 · Rafa: 🧹🌿":"Rafa: 🚿🍳 · Emilio: 🧹🌿";
+      html+=`<div class="month-div">${mLabel}<span class="month-turn">Turno ${turn} — ${td}</span></div>`;
     }
-
-    const satLbl = fmtD(sat,{weekday:"short",day:"numeric"});
-    const sunLbl = fmtD(sun,{weekday:"short",day:"numeric"});
-    const badge  = isThisWeekend
-      ? `<span class="wh-badge badge-now">AHORA</span>`
-      : isNext
-      ? `<span class="wh-badge badge-next">PRÓXIMO</span>`
-      : `<span class="wh-badge badge-fut">Turno ${turn}</span>`;
-    const subTxt = isThisWeekend ? "Este fin de semana" : isNext ? "Próximo fin de semana" : fmtD(sat,{month:"short",day:"numeric"});
-
-    let bodyHtml = "";
-
-    if (isActive) {
-      ["Emilio","Rafa"].forEach(person => {
-        const ids = assign[person] || [];
-        const chips = ids.map(id => {
-          const d = isDone(satKey, id);
-          const task = TASKS.find(t=>t.id===id);
-          return `<div class="chip chip-${person==="Rafa"?"r":"e"} ${d?"done":""}" onclick="toggleTask('${satKey}','${id}')">
-            <span class="chip-ico">${task.icon}</span>
-            <span class="chip-txt">${task.label}</span>
-            <div class="chip-chk">${d?"✓":""}</div>
-          </div>`;
+    const satLbl=fmtD(sat,{weekday:"short",day:"numeric"}),sunLbl=fmtD(sun,{weekday:"short",day:"numeric"});
+    const badge=isThisWeekend?`<span class="wh-badge badge-now">AHORA</span>`:isNext?`<span class="wh-badge badge-next">PRÓXIMO</span>`:`<span class="wh-badge badge-fut">Turno ${turn}</span>`;
+    const sub=isThisWeekend?"Este fin":isNext?"Próximo fin":fmtD(sat,{month:"short",day:"numeric"});
+    let body="";
+    if(isActive){
+      ["Emilio","Rafa"].forEach(person=>{
+        const chips=(assign[person]||[]).map(id=>{
+          const d=isDone(satKey,id),task=TASKS.find(t=>t.id===id);
+          return `<div class="chip chip-${person==="Rafa"?"r":"e"} ${d?"done":""}" onclick="toggleTask('${satKey}','${id}')"><span class="chip-ico">${task.icon}</span><span class="chip-txt">${task.label}</span><div class="chip-chk">${d?"✓":""}</div></div>`;
         }).join("");
-        const cls = person === "Rafa" ? "pb-r" : "pb-e";
-        bodyHtml += `<div class="pb"><div class="pb-name ${cls}">${person}</div><div class="pb-tasks">${chips}</div></div>`;
+        body+=`<div class="pb"><div class="pb-name pb-${person==="Rafa"?"r":"e"}">${person}</div><div class="pb-tasks">${chips}</div></div>`;
       });
-
-      const cacasDone = isDone(satKey,"cacas");
-      bodyHtml += `<div class="cacas-row">
-        <span class="cacas-lbl">💩 Cacas del perro — Emilio</span>
-        <button class="cacas-btn ${cacasDone?"done":""}" onclick="toggleTask('${satKey}','cacas')">
-          <span>💩</span><span>${cacasDone?"Hecho ✓":"Marcar"}</span>
-        </button>
-      </div>`;
+      const cd=isDone(satKey,"cacas");
+      body+=`<div class="cacas-row"><span class="cacas-lbl">💩 Cacas — Emilio</span><button class="cacas-btn ${cd?"done":""}" onclick="toggleTask('${satKey}','cacas')">💩 ${cd?"Hecho ✓":"Marcar"}</button></div>`;
     } else {
-      // Compact future preview
-      const parts = ["Emilio","Rafa"].map(person => {
-        const icons = (assign[person]||[]).map(id=>TASKS.find(t=>t.id===id).icon).join(" ");
-        return `<div class="fut-p"><span class="fut-name">${person}:</span> <span>${icons}</span></div>`;
-      }).join("");
-      bodyHtml = `<div class="fut-row">${parts}<div class="fut-p"><span class="fut-name">Emilio:</span> <span>💩</span></div></div>`;
+      const parts=["Emilio","Rafa"].map(p=>`<div class="fut-p"><span class="fut-name">${p}:</span> ${(assign[p]||[]).map(id=>TASKS.find(t=>t.id===id).icon).join(" ")}</div>`).join("");
+      body=`<div class="fut-row">${parts}<div class="fut-p"><span class="fut-name">Emilio:</span> 💩</div></div>`;
     }
-
-    html += `<div class="wknd ${cardCls}">
-      <div class="wh">
-        <div class="wh-dates">
-          <div class="wh-main">${satLbl} – ${sunLbl}</div>
-          <div class="wh-sub">${subTxt}</div>
-        </div>
-        ${badge}
-      </div>
-      <div class="wb">${bodyHtml}</div>
-    </div>`;
+    html+=`<div class="wknd ${cardCls}"><div class="wh"><div class="wh-dates"><div class="wh-main">${satLbl} – ${sunLbl}</div><div class="wh-sub">${sub}</div></div>${badge}</div><div class="wb">${body}</div></div>`;
   });
-
-  cal.innerHTML = html;
+  cal.innerHTML=html;
 }
 
 // ─── Expenses ────────────────────────────────────────────────────────────────
 
-function renderExpenses() {
-  const totalR = expenses.filter(e=>e.paidBy==="Rafa").reduce((s,e)=>s+e.amount,0);
-  const totalE = expenses.filter(e=>e.paidBy==="Emilio").reduce((s,e)=>s+e.amount,0);
-  const each   = (totalR+totalE)/2;
-  const balance= totalR - each;
-
-  document.getElementById("bal-rafa").textContent       = fmt(totalR);
-  document.getElementById("bal-emilio").textContent     = fmt(totalE);
-  document.getElementById("bal-rafa-each").textContent  = "le toca " + fmt(each);
-  document.getElementById("bal-emilio-each").textContent= "le toca " + fmt(each);
-  document.getElementById("exp-count").textContent      = expenses.length + " gastos registrados";
-
-  const v = document.getElementById("verdict");
-  if (Math.abs(balance) < 0.5) {
-    v.textContent = "✓ Están a mano";
-    v.className = "verdict v-even";
-  } else if (balance > 0) {
-    v.textContent = `Emilio le debe ${fmt(Math.abs(balance))} a Rafa`;
-    v.className = "verdict v-owe";
-  } else {
-    v.textContent = `Rafa le debe ${fmt(Math.abs(balance))} a Emilio`;
-    v.className = "verdict v-owe";
-  }
-
-  const list = document.getElementById("exp-list");
-  if (!expenses.length) {
-    list.innerHTML = `<div class="empty"><div class="empty-icon">🧾</div><div class="empty-txt">Sin gastos aún.<br>Agrega el primero abajo.</div></div>`;
-    return;
-  }
-  list.innerHTML = expenses.map((exp,i) => {
-    const thumb = exp.receipt
-      ? `<img src="${exp.receipt}" class="exp-img" alt="recibo" onclick="showImg('${encodeURIComponent(exp.receipt)}')">`
-      : `<div class="exp-ph">🧾</div>`;
-    const tagCls = exp.paidBy === "Rafa" ? "tag-r" : "tag-e";
-    return `<div class="exp">
-      ${thumb}
-      <div class="exp-info">
-        <div class="exp-desc">${exp.desc}</div>
-        <div class="exp-meta">
-          <span class="tag ${tagCls}">pagó ${exp.paidBy}</span>
-          <span class="exp-date">${exp.date}</span>
-        </div>
-      </div>
-      <div class="exp-right">
-        <div class="exp-total">${fmt(exp.amount)}</div>
-        <div class="exp-split">c/u ${fmt(exp.amount/2)}</div>
-        <button class="exp-del" onclick="deleteExpense(${i})">✕</button>
-      </div>
-    </div>`;
+function renderExpenses(){
+  const totalR=expenses.filter(e=>e.paidBy==="Rafa").reduce((s,e)=>s+e.amount,0);
+  const totalE=expenses.filter(e=>e.paidBy==="Emilio").reduce((s,e)=>s+e.amount,0);
+  const each=(totalR+totalE)/2,balance=totalR-each;
+  document.getElementById("bal-rafa").textContent=fmt(totalR);
+  document.getElementById("bal-emilio").textContent=fmt(totalE);
+  document.getElementById("bal-rafa-each").textContent="le toca "+fmt(each);
+  document.getElementById("bal-emilio-each").textContent="le toca "+fmt(each);
+  document.getElementById("exp-count").textContent=expenses.length+" gastos";
+  const v=document.getElementById("verdict");
+  if(Math.abs(balance)<.5){v.textContent="✓ Están a mano";v.className="verdict v-even";}
+  else if(balance>0){v.textContent=`Emilio le debe ${fmt(Math.abs(balance))} a Rafa`;v.className="verdict v-owe";}
+  else{v.textContent=`Rafa le debe ${fmt(Math.abs(balance))} a Emilio`;v.className="verdict v-owe";}
+  const list=document.getElementById("exp-list");
+  if(!expenses.length){list.innerHTML=`<div class="empty"><div class="empty-icon">🧾</div><div class="empty-txt">Sin gastos aún.</div></div>`;return;}
+  list.innerHTML=expenses.map((exp,i)=>{
+    const thumb=exp.receipt?`<img src="${exp.receipt}" class="exp-img" alt="recibo" onclick="showImg(${i})">`:`<div class="exp-ph">🧾</div>`;
+    return `<div class="exp">${thumb}<div class="exp-info"><div class="exp-desc">${exp.desc}</div><div class="exp-meta"><span class="tag tag-${exp.paidBy==="Rafa"?"r":"e"}">pagó ${exp.paidBy}</span><span class="exp-date">${exp.date}</span></div></div><div class="exp-right"><div class="exp-total">${fmt(exp.amount)}</div><div class="exp-split">c/u ${fmt(exp.amount/2)}</div><button class="exp-del" onclick="deleteExpense(${i})">✕</button></div></div>`;
   }).join("");
 }
 
-function deleteExpense(i) {
+async function deleteExpense(i){
   expenses.splice(i,1);
-  saveExpenses();
   renderExpenses();
+  try { await fbSet("/cc/expenses", expenses.length ? Object.fromEntries(expenses.map((e,j)=>[j,e])) : null); }
+  catch { setStatus("err"); }
   showToast("Eliminado");
 }
 
-function showImg(encoded) {
-  document.getElementById("img-full").src = decodeURIComponent(encoded);
+async function resetExpenses(){
+  if(!confirm("¿Borrar todos los gastos?")) return;
+  expenses=[];
+  renderExpenses();
+  try { await fbDelete("/cc/expenses"); setStatus("ok"); }
+  catch { setStatus("err"); }
+  showToast("Gastos borrados ✓");
+}
+
+function showImg(i){
+  document.getElementById("img-full").src=expenses[i].receipt;
   document.getElementById("img-overlay").classList.remove("hidden");
 }
 
 // ─── Form ────────────────────────────────────────────────────────────────────
 
-function openForm()  { document.getElementById("modal-form").classList.remove("hidden"); }
-function closeForm() {
+function openForm(){ document.getElementById("modal-form").classList.remove("hidden"); }
+function closeForm(){
   document.getElementById("modal-form").classList.add("hidden");
-  document.getElementById("f-desc").value = "";
-  document.getElementById("f-amount").value = "";
-  formReceipt = null;
-  formPayer   = "Rafa";
+  document.getElementById("f-desc").value="";
+  document.getElementById("f-amount").value="";
+  formReceipt=null; formPayer="Rafa";
   document.getElementById("upload-placeholder").classList.remove("hidden");
   document.getElementById("upload-preview").classList.add("hidden");
   selectPayer("Rafa");
 }
-
-function selectPayer(p) {
-  formPayer = p;
-  document.getElementById("btn-rafa").className   = "tog-btn" + (p==="Rafa"?" ar":"");
-  document.getElementById("btn-emilio").className = "tog-btn" + (p==="Emilio"?" ae":"");
+function selectPayer(p){
+  formPayer=p;
+  document.getElementById("btn-rafa").className="tog-btn"+(p==="Rafa"?" ar":"");
+  document.getElementById("btn-emilio").className="tog-btn"+(p==="Emilio"?" ae":"");
 }
-
-function handleFile(input) {
-  const file = input.files[0]; if(!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    formReceipt = ev.target.result;
-    const prev = document.getElementById("upload-preview");
-    prev.src = formReceipt;
-    prev.classList.remove("hidden");
-    document.getElementById("upload-placeholder").classList.add("hidden");
-  };
-  reader.readAsDataURL(file);
+function handleFile(input){
+  const f=input.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=ev=>{formReceipt=ev.target.result;const p=document.getElementById("upload-preview");p.src=formReceipt;p.classList.remove("hidden");document.getElementById("upload-placeholder").classList.add("hidden");};
+  r.readAsDataURL(f);
 }
-
-function addExpense() {
-  const desc   = document.getElementById("f-desc").value.trim();
-  const amount = parseFloat(document.getElementById("f-amount").value);
-  if (!desc || !amount) return;
-  expenses.unshift({
-    desc, amount,
-    paidBy: formPayer,
-    receipt: formReceipt,
-    date: new Date().toLocaleDateString("es-MX",{day:"2-digit",month:"short"}),
-  });
-  saveExpenses();
+async function addExpense(){
+  const desc=document.getElementById("f-desc").value.trim();
+  const amount=parseFloat(document.getElementById("f-amount").value);
+  if(!desc||!amount) return;
+  const exp={desc,amount,paidBy:formPayer,receipt:formReceipt,date:new Date().toLocaleDateString("es-MX",{day:"2-digit",month:"short"})};
+  expenses.unshift(exp);
   renderExpenses();
   closeForm();
+  try {
+    await fbSet("/cc/expenses", Object.fromEntries(expenses.map((e,j)=>[j,e])));
+    setStatus("ok");
+  } catch { setStatus("err"); }
   showToast("Gasto registrado ✓");
 }
 
-// ─── Toast ────────────────────────────────────────────────────────────────────
+// ─── Toast ───────────────────────────────────────────────────────────────────
 
 let toastTimer;
-function showToast(msg) {
-  const t = document.getElementById("toast");
-  t.textContent = msg;
-  t.classList.add("show");
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(()=>t.classList.remove("show"), 2200);
+function showToast(msg){
+  const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");
+  clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove("show"),2200);
 }
 
-// ─── Close modal on backdrop click ───────────────────────────────────────────
+document.getElementById("modal-form").addEventListener("click",e=>{if(e.target===e.currentTarget)closeForm();});
 
-document.getElementById("modal-form").addEventListener("click", e => {
-  if (e.target === e.currentTarget) closeForm();
-});
-
-// ─── Boot ─────────────────────────────────────────────────────────────────────
 init();
 </script>
 </body>
