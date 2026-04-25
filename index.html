@@ -232,7 +232,14 @@
         </div>
         <div class="verdict v-even" id="verdict">✓ Están a mano</div>
       </div>
-      <div class="lbl" id="exp-count">0 gastos registrados</div>
+      <div class="sync-bar">
+        <div class="sync-info" id="sync-info-g">Toca para ver cambios del otro</div>
+        <button class="sync-btn" onclick="syncLog()">🔄 Actualizar</button>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div class="lbl" style="margin-bottom:0" id="exp-count">0 gastos registrados</div>
+        <button onclick="resetExpenses()" style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--terra);background:none;border:1.5px solid var(--terra-bg);border-radius:8px;padding:4px 10px;cursor:pointer;">↺ Borrar todo</button>
+      </div>
       <div id="exp-list"></div>
     </div>
 
@@ -309,24 +316,30 @@ let currentTab  = "limpieza";
 
 // ─── Storage helpers ─────────────────────────────────────────────────────────
 
-// Guardado LOCAL (solo este usuario)
-function saveLocal(key, val) {
-  try { localStorage.setItem(key, JSON.stringify(val)); } catch {}
-}
-function loadLocal(key) {
-  try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : null; } catch { return null; }
-}
+// Todo va a localStorage con claves fijas.
+// Si ambos abren el MISMO URL (GitHub Pages / Netlify) comparten el mismo
+// origen y ven los mismos datos al presionar Actualizar.
+const KEY_LOG = "cc_shared_log_v1";
+const KEY_EXP = "cc_shared_expenses_v1";
 
-// Guardado COMPARTIDO (ambos usuarios ven lo mismo)
-// Usa localStorage con una clave fija — si suben el HTML a GitHub Pages /
-// Netlify, ambos apuntan al mismo dominio y se sincroniza.
-// Dentro del mismo dispositivo/navegador ya funciona de inmediato.
-const SHARED_KEY = "cc_shared_log_v1";
 function saveShared(val) {
-  try { localStorage.setItem(SHARED_KEY, JSON.stringify(val)); } catch {}
+  try { localStorage.setItem(KEY_LOG, JSON.stringify(val)); } catch {}
 }
 function loadShared() {
-  try { const v = localStorage.getItem(SHARED_KEY); return v ? JSON.parse(v) : {}; } catch { return {}; }
+  try { const v = localStorage.getItem(KEY_LOG); return v ? JSON.parse(v) : {}; } catch { return {}; }
+}
+function saveExpenses() {
+  try { localStorage.setItem(KEY_EXP, JSON.stringify(expenses)); } catch {}
+}
+function loadExpenses() {
+  try { const v = localStorage.getItem(KEY_EXP); return v ? JSON.parse(v) : []; } catch { return []; }
+}
+function resetExpenses() {
+  if (!confirm('¿Borrar todos los gastos y empezar de cero?')) return;
+  expenses = [];
+  saveExpenses();
+  renderExpenses();
+  showToast('Gastos borrados ✓');
 }
 
 // ─── Init ────────────────────────────────────────────────────────────────────
@@ -337,7 +350,7 @@ function init() {
 
   // Cargar datos
   log      = loadShared();
-  expenses = loadLocal("cc_expenses") || [];
+  expenses = loadExpenses();
 
   renderCalendar();
   renderExpenses();
@@ -359,9 +372,12 @@ function showTab(tab) {
 
 function syncLog() {
   log = loadShared();
+  expenses = loadExpenses();
   renderCalendar();
+  renderExpenses();
   const t = new Date().toLocaleTimeString("es-MX",{hour:"2-digit",minute:"2-digit"});
   document.getElementById("sync-info").textContent = `Última sync: ${t}`;
+  document.getElementById("sync-info-g").textContent = `Última sync: ${t}`;
   showToast("Sincronizado ✓");
 }
 
@@ -546,7 +562,7 @@ function renderExpenses() {
 
 function deleteExpense(i) {
   expenses.splice(i,1);
-  saveLocal("cc_expenses", expenses);
+  saveExpenses();
   renderExpenses();
   showToast("Eliminado");
 }
@@ -599,7 +615,7 @@ function addExpense() {
     receipt: formReceipt,
     date: new Date().toLocaleDateString("es-MX",{day:"2-digit",month:"short"}),
   });
-  saveLocal("cc_expenses", expenses);
+  saveExpenses();
   renderExpenses();
   closeForm();
   showToast("Gasto registrado ✓");
