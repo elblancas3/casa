@@ -358,23 +358,72 @@ async function fbDelete(path) {
   await fetch(`${DB_URL}${path}.json`, { method: "DELETE" });
 }
 
-// Streaming (Server-Sent Events) para actualizaciones en tiempo real
+// Streaming en tiempo real — Firebase Server-Sent Events
+// Firebase manda "put" (datos completos) y "patch" (actualización parcial)
 let eventSource = null;
 function startRealtime() {
   if (eventSource) eventSource.close();
-  eventSource = new EventSource(`${DB_URL}/cc.json`);
+  eventSource = new EventSource(DB_URL + "/cc.json");
+
+  // PUT: llega cuando se carga por primera vez o hay un cambio grande
   eventSource.addEventListener("put", e => {
     try {
-      const payload = JSON.parse(e.data);
-      if (!payload.data) return;
-      const d = payload.data;
-      if (d.log)      { log      = d.log;      renderCalendar(); }
-      if (d.expenses) { expenses = Object.values(d.expenses); renderExpenses(); }
+      const { path, data } = JSON.parse(e.data);
+      if (path === "/" && data) {
+        if (data.log)      { log      = data.log; renderCalendar(); }
+        if (data.expenses) { expenses = Object.values(data.expenses); renderExpenses(); }
+      } else {
+        // cambio en un sub-path: refrescar todo
+        applyPatch(path, data);
+      }
       setStatus("ok");
-    } catch {}
+    } catch(err) { console.warn("SSE put error", err); }
   });
-  eventSource.onerror = () => setStatus("err");
+
+  // PATCH: llega en actualizaciones parciales
+  eventSource.addEventListener("patch", e => {
+    try {
+      const { path, data } = JSON.parse(e.data);
+      applyPatch(path, data);
+      setStatus("ok");
+    } catch(err) { console.warn("SSE patch error", err); }
+  });
+
+  eventSource.onerror = () => {
+    setStatus("err");
+    // reconectar en 4 segundos si se cae
+    setTimeout(() => { if (eventSource.readyState === 2) startRealtime(); }, 4000);
+  };
   setStatus("sync");
+}
+
+// Aplica un cambio puntual según el path de Firebase
+function applyPatch(path, data) {
+  const parts = path.replace(/^\//, "").split("/").filter(Boolean);
+  // /cc/log/satKey/taskId  → actualizar log
+  if (parts[0]==="cc" && parts[1]==="log") {
+    if (parts.length === 4) {
+      const [,, satKey, taskId] = parts;
+      if (!log[satKey]) log[satKey] = {};
+      log[satKey][taskId] = data;
+      renderCalendar();
+    } else if (parts.length === 3) {
+      log[parts[2]] = data || {};
+      renderCalendar();
+    } else if (parts.length === 2) {
+      log = data || {};
+      renderCalendar();
+    }
+  }
+  // /cc/expenses  → actualizar gastos
+  if (parts[0]==="cc" && parts[1]==="expenses") {
+    if (data === null) {
+      expenses = [];
+    } else {
+      expenses = Object.values(data);
+    }
+    renderExpenses();
+  }
 }
 
 // ─── Setup ───────────────────────────────────────────────────────────────────
